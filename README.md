@@ -9,7 +9,7 @@ Minimal, deterministic project-generation foundation.
 ## Quick start
 ```bash
 python -m unittest discover -s tests -v
-python -m system_builder.cli examples/intent.json ./build-output
+python -m src.system_builder.cli examples/intent.json ./build-output
 ```
 
 The builder validates a JSON intent, creates a deterministic build plan, writes only new files beneath the chosen output directory, and emits a SHA-256 manifest.
