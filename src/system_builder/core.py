@@ -69,5 +69,5 @@ def generate(intent: dict[str, Any], output_dir: Path) -> dict[str, Any]:
         target.write_text(item["content"], encoding="utf-8")
     manifest = {"version": 1, "files": manifest_files}
     root.mkdir(parents=True, exist_ok=True)
-    manifest_path.write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\\n", encoding="utf-8")
+    manifest_path.write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     return manifest
