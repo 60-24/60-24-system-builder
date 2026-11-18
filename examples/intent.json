@@ -1,0 +1,7 @@
+{
+  "version": 1,
+  "files": [
+    { "path": "hello.txt", "content": "Hello from System Builder.\\n" },
+    { "path": "docs/ABOUT.md", "content": "# Generated project\\n\\nCreated from a validated intent.\\n" }
+  ]
+}
