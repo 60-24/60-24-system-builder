@@ -13,7 +13,7 @@ def _safe_relative_path(value: str) -> PurePosixPath:
     path = PurePosixPath(value)
     if path.is_absolute() or any(part in ("", ".", "..") for part in path.parts):
         raise ValueError(f"unsafe relative path: {value!r}")
-    if "\\\\" in value or ":" in path.parts[0]:
+    if "\\" in value or ":" in path.parts[0]:
         raise ValueError(f"unsafe relative path: {value!r}")
     return path
 
@@ -39,6 +39,10 @@ def load_intent(path: Path) -> dict[str, Any]:
 
 
 def build_plan(intent: dict[str, Any]) -> list[dict[str, str]]:
+    if not isinstance(intent, dict) or intent.get("version") != 1:
+        raise ValueError("intent version must be 1")
+    if not isinstance(intent.get("files"), list) or not intent["files"]:
+        raise ValueError("intent must contain a non-empty files list")
     plan = [{"path": _safe_relative_path(item["path"]).as_posix(), "content": item["content"]}
             for item in intent["files"]]
     return sorted(plan, key=lambda item: item["path"])
