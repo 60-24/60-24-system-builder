@@ -78,3 +78,28 @@ Reviewer must inspect the artifacts and diff; an executor's narrative alone is n
 - BLACK conditions require stopping and reporting.
 - A PASS is not a security certification or production-readiness claim.
 - No persistent background activity may be claimed unless a running and observable automation exists.
+
+
+## E. Evidence matrix (when useful)
+
+| Requirement | Test/check | Evidence (SHA/run/command) | Risk/limitation | Status |
+|---|---|---|---|---|
+| | | | | open / in review / verified / blocked / done |
+
+Use only rows relevant to the task; do not duplicate established test reports.
+
+## F. Test-safety note
+
+- Use project test helpers and isolated temporary directories.
+- Cleanup must be scoped to the test-owned path; never target a home directory or other broad path.
+- Report the exact environment and cleanup behavior when relevant.
+
+## G. Audit baseline
+
+- Audited commit SHA (freeze scope):
+- Exact files/areas inspected:
+- Evidence independently checked:
+- Tests rerun / not rerun:
+- Findings (severity, location, scenario, evidence):
+- Untested areas / limits:
+- Recommendation: READY FOR HUMAN DECISION / CHANGES REQUIRED / BLOCKED
