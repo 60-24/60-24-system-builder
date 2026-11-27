@@ -77,3 +77,16 @@ Report only: **Status | Evidence | Risks/Blockers | Next step**. Use links/commi
 ## Adoption
 
 This protocol is a draft for System Builder. It does not automatically govern P2P. Adoption in another repository requires checking that repository's constitution, agent instructions and autonomy boundaries.
+
+
+## Evidence and verification standard (proposal)
+
+- Work states are `open`, `in review`, `verified`, `blocked`, and `done`. `open` or `in review` never imply completion. `done` requires acceptance criteria and evidence; `verified` describes checks independently confirmed.
+- Evidence records the exact commit SHA, CI run/link or local command, environment/runner, outcome, and limitations. Tests not rerun in a check must be explicitly identified as historical/reported evidence, not fresh verification.
+- Independent audits use a frozen commit SHA and report scope inspected, findings with file/line and reproducible evidence, unverified areas, and recommendation. Auditors should inspect artifacts rather than rely on summaries.
+- Where practical, track requirements in a compact matrix: requirement → test/check → evidence → risk → status. Avoid duplicating existing repository records.
+- Protocol/format compatibility should be protected by contract tests or equivalent deterministic fixtures. Changes must not silently alter wire-format behavior.
+- Test helpers and scripts must use isolated, bounded temporary paths and safe cleanup. Never use broad/destructive cleanup targets (for example, `$HOME`) or unchecked recursive deletion.
+- CI security checks (secret scanning, dependency checks and SAST where supported) are supplemental evidence; findings are triaged and their limits documented.
+- Significant architecture decisions should use concise ADRs. Keep decision records proportionate and avoid redundant documentation.
+- Security, identity, trust, privacy, encryption, key lifecycle, repository protection settings and merge/release decisions remain human-gated where they fall in RED/YELLOW boundaries. This standard does not itself authorize such changes.
