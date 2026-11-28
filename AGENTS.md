@@ -2,51 +2,67 @@
 
 ## Source of truth
 - Repository files and GitHub Issues/PRs are authoritative; chat context is secondary.
-- Before work, read this file, the issue, relevant project docs, and current branch/commit.
-- Record the exact baseline SHA in the report/PR. If baseline changes, reassess before continuing.
+- Before work, read this file, the issue, referenced project docs, current branch and baseline.
+- Record exact baseline SHA. If it moves, reassess before continuing.
+- Never infer repository state, test execution, agent activity or permissions from a previous chat/report; verify current evidence.
+
+## Understand before acting
+Before execution, convert the request into a compact task model:
+1. **Outcome:** what observable project result is wanted, and why it matters to the parent goal.
+2. **Inputs:** issue, files, decisions, baseline, dependencies and evidence available.
+3. **Scope / non-scope:** what may and may not change.
+4. **Acceptance:** objective checks that demonstrate completion.
+5. **Autonomy / risk:** GREEN, YELLOW, RED or BLACK; identify irreversible or external effects.
+6. **Unknowns:** assumptions, conflicts and missing facts.
+
+If the task is materially ambiguous, contradictory, unbounded or missing a decision that changes architecture/security/product behavior, stop and ask one focused question or present a decision proposal. Do not silently guess. For routine ambiguity, state a conservative assumption and proceed only if reversible and within scope.
+
+Separate the user's **goal** from the requested **method**. Prefer the smallest safe method that achieves the goal. Do not optimize a local Issue in a way that harms system-level direction. If acceptance criteria conflict with the parent goal or repository invariants, report the conflict rather than blindly satisfying the checklist.
 
 ## Routing
-- The coordinator assigns a specific Issue to an agent and role. Agents do not select, claim, or expand tasks unilaterally.
-- The Issue is the task brief: scope, deliverables, acceptance criteria, restrictions and evidence expectations.
-- Do not copy the full Issue into prompts. Send the Issue URL/number plus this repository's instructions and any necessary context not already in the repo.
-- If an issue is unassigned, do not assume authorization to work on it.
+- Coordinator selects a ready Issue and assigns a specific agent and role. Agents do not self-assign or expand work.
+- The Issue is the task contract: scope, deliverables, acceptance, restrictions and evidence.
+- Route with Issue URL/number plus necessary context not already in the repo; do not paste the whole Issue unnecessarily.
+- Issue creation or assignment is not proof that an agent started or completed work.
 
 ## Roles
-- **Coordinator (ChatGPT or designated human):** prioritizes, routes, resolves conflicts, reviews evidence and authorizes protected decisions.
-- **Implementer (Claude/Copilot/other):** executes bounded issue scope, tests, documents, opens PR; no merge.
-- **Independent auditor (different agent):** read-only review of frozen commit; reports findings with file/line and reproducible evidence; no implementation.
-- **Verifier:** validates acceptance criteria and CI/evidence. Prefer independent verification for security-sensitive changes.
+- **Coordinator:** prioritizes, decomposes, routes, resolves conflicts, reviews evidence and authorizes protected decisions.
+- **Implementer:** executes bounded scope, tests, documents and opens a PR; never merges.
+- **Independent auditor:** read-only review of a frozen SHA; different agent from implementer where practical.
+- **Verifier:** checks acceptance and reproduces critical evidence; must identify what was independently verified versus merely reported.
+- One implementer per branch/Issue. Parallel work requires separate non-overlapping tasks.
 
 ## Autonomy zones
-- **GREEN:** bounded tests, documentation, safe fixes, implementation explicitly permitted by Issue.
+- **GREEN:** bounded tests, documentation, safe fixes and implementation explicitly permitted by Issue.
 - **YELLOW:** protocol/API/data-model, cross-layer or material dependency changes; proposal and explicit human approval before implementation.
-- **RED:** constitution, trust model, identity/governance, fundamental security policy; human decision.
-- **BLACK:** conflict, invariant violation, unsafe action, uncertain state, destructive operation, secret exposure; stop and report.
+- **RED:** constitution, trust model, identity/governance and fundamental security policy; human decision required.
+- **BLACK:** contradiction, invariant violation, unsafe/destructive action, secret exposure or unknown critical state; stop.
 
 An Issue can narrow autonomy but cannot grant authority beyond repository policy. GREEN is not permission to change adjacent scope.
 
 ## Execution protocol
-1. Inspect status, branch, issue, instructions and baseline.
-2. Summarize proposed steps and risks in the Issue/PR if materially non-trivial.
-3. Implement the smallest coherent change; avoid unrelated edits.
-4. Add or update tests as appropriate and run relevant commands.
-5. Review the diff, scope and safety implications.
-6. Open a PR; keep it draft if validation is incomplete or a decision is pending.
-7. Report commit SHA, changed files, commands/results, evidence links, limitations and unresolved risks.
-8. Do not merge, deploy, publish releases, change secrets/permissions, or initiate additional agents unless explicitly authorized.
+1. Inspect repository, instructions, issue, dependencies, branch and baseline.
+2. Write a short understanding/plan for non-trivial work; identify risk and expected evidence.
+3. Confirm the plan fits both the Issue and parent project goal.
+4. Implement the smallest coherent change; avoid unrelated edits.
+5. Add/update tests as appropriate and run relevant commands.
+6. Inspect the final diff, changed-file list and scope; check for resource cleanup, failure paths and unintended effects.
+7. Open/update a PR; keep draft if validation, review or a decision is incomplete.
+8. Report exact evidence and remaining work. Do not claim completion merely because code was committed.
 
 ## Evidence and status
-Use only these statuses: **OPEN**, **IN PROGRESS**, **BLOCKED**, **IN REVIEW**, **VERIFIED**, **CLOSED**.
-- VERIFIED requires independent or otherwise clearly described verification evidence; a green CI badge alone is not sufficient.
-- Distinguish locally executed tests, CI runs, static inspection, mutation checks and unverified assumptions.
-- Never report PASS/GREEN without evidence and scope.
-- For audit findings, reference frozen SHA and include file/line, severity, impact and reproduction/verification status.
+Use only: **OPEN**, **IN PROGRESS**, **BLOCKED**, **IN REVIEW**, **VERIFIED**, **CLOSED**.
+- **VERIFIED** requires acceptance checks plus independent or clearly described verification. A green badge or implementer's assertion alone is insufficient.
+- Attribute evidence: implementer-reported local test, independently reproduced local test, CI for exact SHA, static review, mutation test, device/network test.
+- Record command, environment, exact SHA, result and limitations. Distinguish not run from failed.
+- For audits, cite frozen SHA and file/line; state severity, impact, reproduction and confidence.
+- A mutation result is reproducible only if mutation instructions or scripts are preserved.
 
-## Task boundaries
-- Issue acceptance criteria and restrictions define completion.
-- If requirements conflict, scope is unclear, tests expose a security/architecture defect, or changes outside scope appear necessary: stop, comment with evidence and request a decision.
-- No unsafe shell commands, deletion outside task scope, credential handling, or secret commits.
-- No self-approval or merging one's own work.
+## Stop and escalation
+Stop when requirements conflict, scope is unclear, baseline changes materially, tests reveal security/architecture defects, credentials are needed, or out-of-scope changes become necessary. Report facts, impact and the smallest decision needed. Never hide uncertainty behind a status label.
+
+## Protected actions
+No merge, release, deploy, permission/secret change, destructive or irreversible action, broad credential grant, or additional agent launch without explicit authorization. No self-approval or merging one's own work.
 
 ## Minimal handoff
-Issue/PR report: **baseline SHA; commit SHA; scope/files; tests and actual outcomes; CI links/status; audit/verification; deviations; risks; next decision**.
+**Goal/outcome; Issue/PR; baseline and commit SHA; scope/files; actual commands/results; CI for exact SHA; independent review; limitations/risks; deviations; next decision.**
